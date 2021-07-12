@@ -1,6 +1,7 @@
 <h1>Challenge 1:</h1>
 <h2>Use the API (http://worldclockapi.com/):</h2>
 <body>
+<p>Learn more <a href="http://worldclockapi.com"> here!</a></p><br/>
 This program will use API http://worldclockapi.com/ <br/>
 It is a simple page using JavaScript. <br/>
 It will shows the results on screen of some curls´s examples. <br/>
@@ -12,41 +13,31 @@ There is no persistent data.
  Our primary language is English so please use it on comments and documentation;<br/>
 ●      We’d like to see SOLID principles in your solution;<br/>
 ●      You don’t need to persist any data (but feel free to do it if you want);<br/>
-
-<p>Click  <a href="http://worldclockapi.com"> here!</a></p><br/>
-  Numero 1:<input id="num1" type="number"> <br />
-  Numero 2:<input id="num2" type="number"> <br />
-  TEXT:<input id="json1" type="text"> <br/>
-  <input type="radio" name="dateTime" id="UTC" checked="TRUE"/> UTC±00<br />
-  <input type="radio" name="dateTime" id="EST"/> EST/UTC−04<br />
-  <button onclick="id">Execute</button><br />
-   Resposta: <div id="F2()"></div>
 </body>
+
+  <!-- Window Objects using  HTML -->
+  Date/Time:<input id='jsonDateTime' type='text'> <br/>
+  <input type='radio' name='dateTimeZone' id='utc' checked='TRUE'> UTC±00<br />
+  <input type='radio' name='dateTimeZone' id='est'> EST(UTC−04)<br />
+  
+  
+  <!-- <button onclick="id">Execute</button><br />  -->
+  <button name='button' type='submit' onclick='UserAction()'>Run Example</button>
+   JSON Result:<textarea id="jsonText1" name="textarea" rows="5" cols="120"
+   placeholder="Comment text."></textarea> 
+  <button name='button1' type='submit' onclick='ClickButtonUTC()'>Run TimeZone UTC</button>
+  <button name='button2' type='submit' onclick='ClickButtonEST()'>Run TimeZone EST</button>
+
 <script>
-    var para = document.getElementById('num1');
-    para.innerText = '12345678';
-</script>
-    
-<script>
-    // Click to begin the continue
-    //alert("Run the challenge 1.")
-    document.writeln("Execute  API Time UTC"); 
-    document.writeln("Execute  API Time EST");
-    src="Challenge1.js";
+// JAVASCRIPT Solution to call API and show the JSON return for timezones UTC and EST
 /* 
 World Clock API
 Alpha Version .1
 REST Services that will return current date/time in JSON for any registered time zone.
-
 Eastern Standard Time http://worldclockapi.com/api/json/est/now
 Coordinated Universal Time http://worldclockapi.com/api/json/utc/now
-Also supports JSONP
-Central European Standard Time http://worldclockapi.com/api/jsonp/cet/now?callback=mycallback
 */
-    function mycallback(data) {
-        console.log(data);      
-    }
-
+// Function UserAction that creates and executes an HTTP Request using JSON / API Rest 
     function UserAction() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function()   { // status HTTP 200 == sucess 
@@ -54,16 +45,20 @@ Central European Standard Time http://worldclockapi.com/api/jsonp/cet/now?callba
                                                     // Action when the document is ready
                                                     //alert(this.responseText);
                                                     var response = xhttp.responseText;
-                                                    document.getElementById("json1").value = this.responseText;
-                                                    console.log("ok"+response);
-                                                    alert(document.getElementById("utc").value);
+                                                    var json = JSON.parse(xhttp.response);
+                                                    document.getElementById("jsonText1").value = this.responseText;
+                                                    document.getElementById("jsonDateTime").value = json.currentDateTime;
+                                                    console.log(document.getElementById("utc").checked);                                                    
                                                 }
-                                                
+                      
         }
-        // xhttp.open("POST", "Your Rest URL Here", true);
-        xhttp.open('GET', 'http://worldclockapi.com/api/json/utc/now', true);
+        if (document.getElementById('est').checked)  {
+            xhttp.open('GET', 'http://worldclockapi.com/api/json/est/now', true)
+        }
+        else {
+            xhttp.open('GET', 'http://worldclockapi.com/api/json/utc/now', true);
+        }
         //xhttp.setRequestHeader("Content-type","application/json");
-        //if document.getElementById("utc").value = 100000;
         xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
         xhttp.setRequestHeader('Access-Control-Allow-Credentials', 'true');
@@ -71,30 +66,19 @@ Central European Standard Time http://worldclockapi.com/api/jsonp/cet/now?callba
         xhttp.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
         xhttp.send();
     }
-
-</script>
-<!--
-REST calls from browser.  Use callback in order that API REST encapsulate the data from the function
--->
-<script>
-   src='Challenge1.js';
-   //F2('UTC-02');
-</script>
-
-<button button1 type='submit' onclick='UserAction()'>Run Example 1</button>
-<button button2 type='submit' onclick='UserAction()'>Run Example 2</button>
-<button button type='submit' onclick='UpdateResult()'>Run Example</button>
-
-<script>
-document.getElementById("button").onclick = function() {UpdateResult();};
-    function UpdateResult()
+    
+    // check radiobox option EST, after button EST clicked
+    function ClickButtonUTC()
     {
+        document.getElementById("utc").checked='true';
         UserAction();
-        var first = parseFloat(document.getElementById("num1").value);
-        var second = parseFloat(document.getElementById("num2").value);
-        if (isNaN(first)) first = 0;
-        if (isNaN(second)) second = 0;
-        document.getElementById("num2").value = 100000;
+    }
+
+    // check radiobox option EST, after button EST clicked
+    function ClickButtonEST()
+    {
+        document.getElementById("est").checked='true';
+        UserAction();
     }
 </script>
 
